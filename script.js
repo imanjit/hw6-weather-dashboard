@@ -1,21 +1,12 @@
-let savedCities = []
-
-let apiKey = "c32994fa4154612f41f38bdd2aa60666";
-
-savedCities.forEach(function (city, index, arr) {
-    if (index === arr.length - 1) {
-        fetchForecast(city)
-    }
-})
-
 function fetchForecast(city) {
-    let apiUrl = `api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=imperial`;
+    let apiKey = "c32994fa4154612f41f38bdd2aa60666";
+    let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=imperial`;
 
-    fetch(apiUrl)
+    $.get(apiUrl)
         .then(function (response) {
             let temperature = response.main.temp;
             let windSpeed = response.wind.speed;
-            let humidity = response.main.humidity
+            let humidity = response.main.humidity;
 
             let cityDiv = $("<div class='city'>");
             let title = $("<h3>").text(city);
@@ -26,16 +17,18 @@ function fetchForecast(city) {
             cityDiv.append(title, tem, win, hum);
 
             $("#todayWeather").empty();
-            $("todayWeather").prepend(cityDiv);
+            $("#todayWeather").prepend(cityDiv);
         })
 }
 
 $("#searchBtn").on("click", function(event){
     event.preventDefault();
 
+    let savedCities = []
     let weather = $("#cityInput").val();
 
     localStorage.setItem("weather", JSON.stringify(savedCities))
     savedCities.push(weather);
 
+    fetchForecast(weather);
 })
